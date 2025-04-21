@@ -35,7 +35,7 @@ val chapters = listOf(
         route = NavRoutes.CHAPTER_0101
     ),
     ChapterInfo(
-        title = "Section 02: Basic Circle",
+        title = "Section 02: Step function",
         description = "A simple shader example showing circle",
         route = NavRoutes.CHAPTER_0102
     ),
@@ -45,9 +45,19 @@ val chapters = listOf(
         route = NavRoutes.CHAPTER_0103
     ),
     ChapterInfo(
-        title = "Section 04: Glow Effect",
+        title = "Section 04: Signed Distance Function",
         description = "Button glow with time effect",
         route = NavRoutes.CHAPTER_0104
+    ),
+    ChapterInfo(
+        title = "Section 05: Angle to the point",
+        description = "Three deformed circles example",
+        route = NavRoutes.CHAPTER_0105
+    ),
+    ChapterInfo(
+        title = "Section 06: Combining angle and smoothstep",
+        description = "Three circles into one effect",
+        route = NavRoutes.CHAPTER_0106
     )
 )
 

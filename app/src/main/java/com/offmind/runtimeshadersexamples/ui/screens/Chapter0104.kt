@@ -46,7 +46,7 @@ fun Chapter0104(
 }
 
 @Composable
-fun GlowButton(
+private fun GlowButton(
     modifier: Modifier = Modifier,
     text: String
 ) {
