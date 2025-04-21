@@ -41,8 +41,8 @@ val chapters01 = listOf(
 // List of chapters
 val chapters02 = listOf(
     ChapterInfo(
-        title = "Section 02: The very basic noise function",
+        title = "Section 01: The very basic noise function",
         description = "A noise to text effect",
-        route = NavRoutes.CHAPTER_0101
+        route = NavRoutes.CHAPTER_0201
     ),
 )
