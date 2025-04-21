@@ -35,9 +35,14 @@ import androidx.core.net.toUri
 data class ChapterInfo(
     val title: String,
     val description: String,
-    val route: String
+    val route: String,
+    val composable: (@Composable ColumnScope.(String) -> Unit) -> @Composable () -> Unit = { codeContainer ->
+        {
+            // This will be resolved at runtime based on the route
+            // The actual implementation is in AppNavigation.kt
+        }
+    }
 )
-
 
 @Composable
 fun LandingPage(
@@ -66,10 +71,8 @@ fun LandingPage(
                 }
         ) {
             item {
-                Spacer(modifier = Modifier.height(7.dp))
-            }
-            item {
                 Column {
+                    Spacer(modifier = Modifier.height(7.dp))
                     Text("Chapter 01", style = MaterialTheme.typography.titleLarge)
                     Text("Circles and all you need about that", style = MaterialTheme.typography.titleMedium)
                 }
@@ -82,6 +85,7 @@ fun LandingPage(
             }
             item {
                 Column {
+                    Spacer(modifier = Modifier.height(7.dp))
                     Text("Chapter 02", style = MaterialTheme.typography.titleLarge)
                     Text("Blending with the input", style = MaterialTheme.typography.titleMedium)
                 }
@@ -211,11 +215,10 @@ private val runtimeShader = """
 
     half4 main(float2 fragCoord) {
        float2 uv = fragCoord / resolution - 0.5;
-  
+
        vec4 content = image.eval(fragCoord).rgba;
        float alpha = smoothstep(0.5, 0.47, length(uv.y));
-            
+
        return half4(content.rgb*alpha*content.a,alpha*content.a);
     }
 """.trimIndent()
-

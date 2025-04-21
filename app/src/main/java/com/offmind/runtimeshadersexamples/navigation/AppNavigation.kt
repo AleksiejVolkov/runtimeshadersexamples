@@ -2,10 +2,13 @@ package com.offmind.runtimeshadersexamples.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.offmind.runtimeshadersexamples.ui.chapters01
+import com.offmind.runtimeshadersexamples.ui.chapters02
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0101
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0102
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0103
@@ -15,13 +18,32 @@ import com.offmind.runtimeshadersexamples.ui.screens.Chapter0106
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0201
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0202
 import com.offmind.runtimeshadersexamples.ui.screens.CodeContainer
+import com.offmind.runtimeshadersexamples.ui.theme.ChapterInfo
 import com.offmind.runtimeshadersexamples.ui.theme.LandingPage
 
 /**
  * Navigation routes for the application
+ * 
+ * This object provides route constants and helper functions for navigation.
+ * 
+ * When adding a new shader screen, you don't need to modify this file.
+ * Instead, use the NavRoutes.getChapterRoute() function in Chapters.kt
+ * to generate the route for your new chapter.
+ * 
+ * Example:
+ * ```
+ * ChapterInfo(
+ *     title = "My New Chapter",
+ *     description = "Description of my new chapter",
+ *     route = NavRoutes.getChapterRoute("0203"),
+ *     composable = { codeContainer -> { Chapter0203(codeContainer = codeContainer) } }
+ * )
+ * ```
  */
 object NavRoutes {
     const val LANDING = "landing"
+
+    // Chapter routes - these are kept for backward compatibility
     const val CHAPTER_0101 = "chapter_0101"
     const val CHAPTER_0102 = "chapter_0102"
     const val CHAPTER_0103 = "chapter_0103"
@@ -30,6 +52,52 @@ object NavRoutes {
     const val CHAPTER_0106 = "chapter_0106"
     const val CHAPTER_0201 = "chapter_0201"
     const val CHAPTER_0202 = "chapter_0202"
+
+    // Helper function to get all chapter routes
+    fun getAllChapterRoutes(): List<String> {
+        return listOf(
+            CHAPTER_0101, CHAPTER_0102, CHAPTER_0103, CHAPTER_0104, CHAPTER_0105, CHAPTER_0106,
+            CHAPTER_0201, CHAPTER_0202
+        )
+    }
+
+    /**
+     * Helper function to generate route from chapter number
+     * Example: "0101" -> "chapter_0101"
+     */
+    fun generateRoute(chapterNumber: String): String {
+        return "chapter_$chapterNumber".lowercase()
+    }
+
+    /**
+     * Helper function to get a route constant for a chapter
+     * This can be used when adding new chapters
+     * Example: getChapterRoute("0103") -> "chapter_0103"
+     */
+    fun getChapterRoute(chapterNumber: String): String {
+        return generateRoute(chapterNumber)
+    }
+}
+
+/**
+ * Helper function to add chapter routes to NavGraphBuilder
+ * 
+ * This function automatically adds all chapters from the provided list to the navigation graph.
+ * It uses the route and composable properties from each ChapterInfo to set up the navigation.
+ * 
+ * This is part of the generalized navigation system that makes it easy to add new shader screens
+ * without having to manually update the navigation code.
+ */
+private fun NavGraphBuilder.addChapterRoutes(chapters: List<ChapterInfo>) {
+    chapters.forEach { chapter ->
+        composable(chapter.route) {
+            chapter.composable { runtimeShader ->
+                CodeContainer(
+                    runtimeShader = runtimeShader
+                )
+            }()
+        }
+    }
 }
 
 /**
@@ -53,84 +121,8 @@ fun AppNavigation(
             )
         }
 
-        composable(NavRoutes.CHAPTER_0101) {
-            Chapter0101(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0102) {
-            Chapter0102(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0103) {
-            Chapter0103(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0104) {
-            Chapter0104(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0105) {
-            Chapter0105(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0106) {
-            Chapter0106(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0201) {
-            Chapter0201(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
-
-        composable(NavRoutes.CHAPTER_0202) {
-            Chapter0202(
-                codeContainer = { runtimeShader ->
-                    CodeContainer(
-                        runtimeShader = runtimeShader
-                    )
-                }
-            )
-        }
+        // Add all chapter routes
+        addChapterRoutes(chapters01)
+        addChapterRoutes(chapters02)
     }
 }

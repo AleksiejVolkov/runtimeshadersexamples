@@ -1,7 +1,30 @@
 package com.offmind.runtimeshadersexamples.ui
 
+import androidx.compose.runtime.Composable
 import com.offmind.runtimeshadersexamples.navigation.NavRoutes
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0101
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0102
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0103
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0104
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0105
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0106
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0201
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0202
 import com.offmind.runtimeshadersexamples.ui.theme.ChapterInfo
+
+/**
+ * This file contains the definitions of all chapters in the application.
+ * 
+ * To add a new shader screen:
+ * 1. Create a new Chapter composable in the ui.screens package (e.g., Chapter0203.kt)
+ * 2. Import it at the top of this file
+ * 3. Add a new ChapterInfo to the appropriate chapter list (e.g., chapters02)
+ *    - Use NavRoutes.getChapterRoute("0203") to generate the route
+ *    - Provide the composable reference: { codeContainer -> { Chapter0203(codeContainer = codeContainer) } }
+ * 
+ * That's it! The navigation system will automatically handle the new chapter.
+ * No need to update NavRoutes or AppNavigation.kt manually.
+ */
 
 
 // List of chapters
@@ -9,32 +32,38 @@ val chapters01 = listOf(
     ChapterInfo(
         title = "Section 01: Basic Shader",
         description = "A simple shader example showing color gradients",
-        route = NavRoutes.CHAPTER_0101
+        route = NavRoutes.getChapterRoute("0101"),
+        composable = { codeContainer -> { Chapter0101(codeContainer = codeContainer) } }
     ),
     ChapterInfo(
         title = "Section 02: Step function",
         description = "A simple shader example showing circle",
-        route = NavRoutes.CHAPTER_0102
+        route = NavRoutes.getChapterRoute("0102"),
+        composable = { codeContainer -> { Chapter0102(codeContainer = codeContainer) } }
     ),
     ChapterInfo(
         title = "Section 03: Smoothstep",
         description = "An example of smoothstep function",
-        route = NavRoutes.CHAPTER_0103
+        route = NavRoutes.getChapterRoute("0103"),
+        composable = { codeContainer -> { Chapter0103(codeContainer = codeContainer) } }
     ),
     ChapterInfo(
         title = "Section 04: Signed Distance Function",
         description = "Button glow with time effect",
-        route = NavRoutes.CHAPTER_0104
+        route = NavRoutes.getChapterRoute("0104"),
+        composable = { codeContainer -> { Chapter0104(codeContainer = codeContainer) } }
     ),
     ChapterInfo(
         title = "Section 05: Angle to the point",
         description = "Three deformed circles example",
-        route = NavRoutes.CHAPTER_0105
+        route = NavRoutes.getChapterRoute("0105"),
+        composable = { codeContainer -> { Chapter0105(codeContainer = codeContainer) } }
     ),
     ChapterInfo(
         title = "Section 06: Combining angle and smoothstep",
         description = "Three circles into one effect",
-        route = NavRoutes.CHAPTER_0106
+        route = NavRoutes.getChapterRoute("0106"),
+        composable = { codeContainer -> { Chapter0106(codeContainer = codeContainer) } }
     )
 )
 
@@ -43,11 +72,13 @@ val chapters02 = listOf(
     ChapterInfo(
         title = "Section 01: The very basic noise function",
         description = "A noise to text effect",
-        route = NavRoutes.CHAPTER_0201
+        route = NavRoutes.getChapterRoute("0201"),
+        composable = { codeContainer -> { Chapter0201(codeContainer = codeContainer) } }
     ),
     ChapterInfo(
         title = "Section 02: Simplest Value noise",
         description = "Breaking image into pixels",
-        route = NavRoutes.CHAPTER_0202
+        route = NavRoutes.getChapterRoute("0202"),
+        composable = { codeContainer -> { Chapter0202(codeContainer = codeContainer) } }
     ),
 )
