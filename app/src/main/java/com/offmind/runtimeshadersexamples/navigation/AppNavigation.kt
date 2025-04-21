@@ -13,6 +13,7 @@ import com.offmind.runtimeshadersexamples.ui.screens.Chapter0104
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0105
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0106
 import com.offmind.runtimeshadersexamples.ui.screens.Chapter0201
+import com.offmind.runtimeshadersexamples.ui.screens.Chapter0202
 import com.offmind.runtimeshadersexamples.ui.screens.CodeContainer
 import com.offmind.runtimeshadersexamples.ui.theme.LandingPage
 
@@ -28,6 +29,7 @@ object NavRoutes {
     const val CHAPTER_0105 = "chapter_0105"
     const val CHAPTER_0106 = "chapter_0106"
     const val CHAPTER_0201 = "chapter_0201"
+    const val CHAPTER_0202 = "chapter_0202"
 }
 
 /**
@@ -113,6 +115,16 @@ fun AppNavigation(
 
         composable(NavRoutes.CHAPTER_0201) {
             Chapter0201(
+                codeContainer = { runtimeShader ->
+                    CodeContainer(
+                        runtimeShader = runtimeShader
+                    )
+                }
+            )
+        }
+
+        composable(NavRoutes.CHAPTER_0202) {
+            Chapter0202(
                 codeContainer = { runtimeShader ->
                     CodeContainer(
                         runtimeShader = runtimeShader

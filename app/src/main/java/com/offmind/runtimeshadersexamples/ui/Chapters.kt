@@ -45,4 +45,9 @@ val chapters02 = listOf(
         description = "A noise to text effect",
         route = NavRoutes.CHAPTER_0201
     ),
+    ChapterInfo(
+        title = "Section 02: Simplest Value noise",
+        description = "Breaking image into pixels",
+        route = NavRoutes.CHAPTER_0202
+    ),
 )
