@@ -2,34 +2,29 @@ package com.offmind.runtimeshadersexamples.ui.screens
 
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.jeziellago.compose.markdowntext.MarkdownText
+import com.offmind.runtimeshadersexamples.R
 
 @Composable
-fun Chapter0101(
+fun Chapter0103(
     codeContainer: @Composable ColumnScope.(String) -> Unit = {},
 ) {
     val shader = remember { RuntimeShader(runtimeShader) }
@@ -50,8 +45,14 @@ fun Chapter0101(
                         .createRuntimeShaderEffect(shader, "image")
                         .asComposeRenderEffect()
                 }
-                .background(Color.White)
-        )
+        ) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                painter = painterResource(id = R.drawable.android_mascote),
+                contentDescription = null
+            )
+        }
         Spacer(modifier = Modifier.weight(1f))
         codeContainer(
             runtimeShader
@@ -64,7 +65,14 @@ private val runtimeShader = """
     uniform float2 resolution;
 
     half4 main(float2 fragCoord) {
-        float2 uv = fragCoord / resolution;
-        return half4(uv.x, uv.y, 0.0, 1.0);
+       float2 uv = fragCoord / resolution - 0.5;
+  
+       float radius = 0.5;
+       vec3 circleColor = image.eval(fragCoord).rgb;
+       float circle = smoothstep(radius, radius-0.05, length(uv));
+      
+       vec3 color = circle*circleColor;
+      
+       return half4(color,circle);
     }
 """.trimIndent()

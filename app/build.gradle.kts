@@ -47,6 +47,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Markdown library for code highlighting
+    implementation("com.github.jeziellago:compose-markdown:0.3.4")
+
     // Koin
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)

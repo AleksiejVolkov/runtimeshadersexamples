@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -14,14 +15,49 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.offmind.runtimeshadersexamples.model.Project
+import com.offmind.runtimeshadersexamples.navigation.NavRoutes
 import org.koin.compose.koinInject
+
+/**
+ * Data class representing a chapter item in the landing page
+ */
+data class ChapterInfo(
+    val title: String,
+    val description: String,
+    val route: String
+)
+
+// List of chapters
+val chapters = listOf(
+    ChapterInfo(
+        title = "Section 01: Basic Shader",
+        description = "A simple shader example showing color gradients",
+        route = NavRoutes.CHAPTER_0101
+    ),
+    ChapterInfo(
+        title = "Section 02: Basic Circle",
+        description = "A simple shader example showing circle",
+        route = NavRoutes.CHAPTER_0102
+    ),
+    ChapterInfo(
+        title = "Section 03: Smoothstep",
+        description = "An example of smoothstep function",
+        route = NavRoutes.CHAPTER_0103
+    ),
+    ChapterInfo(
+        title = "Section 04: Glow Effect",
+        description = "Button glow with time effect",
+        route = NavRoutes.CHAPTER_0104
+    )
+)
 
 @Composable
 fun LandingPage(
     innerPadding: PaddingValues,
-    onNavigateToChapter0101: () -> Unit = {}
+    onNavigateToChapter: (String) -> Unit = {}
 ) {
     val project: Project = koinInject()
+
     Column {
         ProjectInfo(
             project = project,
@@ -29,14 +65,41 @@ fun LandingPage(
         )
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
-        ) { 
+        ) {
             item {
+                Text("Chapter 01", style = MaterialTheme.typography.titleLarge)
+            }
+            items(chapters) { chapter ->
                 ChapterItem(
-                    title = "Chapter 01-01: Basic Shader",
-                    description = "A simple shader example showing color gradients",
-                    onClick = onNavigateToChapter0101
+                    chapter = chapter,
+                    onClick = { onNavigateToChapter(chapter.route) }
                 )
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChapterItem(
+    chapter: ChapterInfo,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        onClick = onClick
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = chapter.title,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Text(
+                text = chapter.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
@@ -48,23 +111,14 @@ fun ChapterItem(
     description: String,
     onClick: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
+    ChapterItem(
+        chapter = ChapterInfo(
+            title = title,
+            description = description,
+            route = "" // Route not needed for this overload
+        ),
         onClick = onClick
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
+    )
 }
 
 @Composable
