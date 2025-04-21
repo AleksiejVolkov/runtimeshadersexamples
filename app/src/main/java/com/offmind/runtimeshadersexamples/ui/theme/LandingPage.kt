@@ -1,22 +1,33 @@
 package com.offmind.runtimeshadersexamples.ui.theme
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import android.content.Intent
+import android.graphics.RenderEffect
+import android.graphics.RuntimeShader
+import android.net.Uri
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asComposeRenderEffect
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.offmind.runtimeshadersexamples.model.Project
-import com.offmind.runtimeshadersexamples.navigation.NavRoutes
+import com.offmind.runtimeshadersexamples.ui.chapters01
+import com.offmind.runtimeshadersexamples.ui.chapters02
 import org.koin.compose.koinInject
+import androidx.core.net.toUri
 
 /**
  * Data class representing a chapter item in the landing page
@@ -27,39 +38,6 @@ data class ChapterInfo(
     val route: String
 )
 
-// List of chapters
-val chapters = listOf(
-    ChapterInfo(
-        title = "Section 01: Basic Shader",
-        description = "A simple shader example showing color gradients",
-        route = NavRoutes.CHAPTER_0101
-    ),
-    ChapterInfo(
-        title = "Section 02: Step function",
-        description = "A simple shader example showing circle",
-        route = NavRoutes.CHAPTER_0102
-    ),
-    ChapterInfo(
-        title = "Section 03: Smoothstep",
-        description = "An example of smoothstep function",
-        route = NavRoutes.CHAPTER_0103
-    ),
-    ChapterInfo(
-        title = "Section 04: Signed Distance Function",
-        description = "Button glow with time effect",
-        route = NavRoutes.CHAPTER_0104
-    ),
-    ChapterInfo(
-        title = "Section 05: Angle to the point",
-        description = "Three deformed circles example",
-        route = NavRoutes.CHAPTER_0105
-    ),
-    ChapterInfo(
-        title = "Section 06: Combining angle and smoothstep",
-        description = "Three circles into one effect",
-        route = NavRoutes.CHAPTER_0106
-    )
-)
 
 @Composable
 fun LandingPage(
@@ -67,23 +45,55 @@ fun LandingPage(
     onNavigateToChapter: (String) -> Unit = {}
 ) {
     val project: Project = koinInject()
+    val fadeShader = remember { RuntimeShader(runtimeShader) }
 
-    Column {
+    Column(Modifier.padding(innerPadding)) {
         ProjectInfo(
             project = project,
-            modifier = Modifier.padding(innerPadding)
         )
         LazyColumn(
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .onSizeChanged { size ->
+                    fadeShader.setFloatUniform(
+                        "resolution", size.width.toFloat(), size.height.toFloat()
+                    )
+                }
+                .graphicsLayer {
+                    this.renderEffect = RenderEffect
+                        .createRuntimeShaderEffect(fadeShader, "image")
+                        .asComposeRenderEffect()
+                }
         ) {
             item {
-                Text("Chapter 01", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(7.dp))
             }
-            items(chapters) { chapter ->
+            item {
+                Column {
+                    Text("Chapter 01", style = MaterialTheme.typography.titleLarge)
+                    Text("Circles and all you need about that", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+            items(chapters01) { chapter ->
                 ChapterItem(
                     chapter = chapter,
                     onClick = { onNavigateToChapter(chapter.route) }
                 )
+            }
+            item {
+                Column {
+                    Text("Chapter 02", style = MaterialTheme.typography.titleLarge)
+                    Text("Blending with the input", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+            items(chapters02) { chapter ->
+                ChapterItem(
+                    chapter = chapter,
+                    onClick = { onNavigateToChapter(chapter.route) }
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }
@@ -114,23 +124,6 @@ fun ChapterItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChapterItem(
-    title: String,
-    description: String,
-    onClick: () -> Unit
-) {
-    ChapterItem(
-        chapter = ChapterInfo(
-            title = title,
-            description = description,
-            route = "" // Route not needed for this overload
-        ),
-        onClick = onClick
-    )
-}
-
 @Composable
 fun ProjectInfo(project: Project, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(16.dp)) {
@@ -149,6 +142,36 @@ fun ProjectInfo(project: Project, modifier: Modifier = Modifier) {
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyMedium
         )
+        Row {
+            Text(
+                text = "You can buy a book: ",
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            val link = project.link
+            val annotatedString = buildAnnotatedString {
+                pushStringAnnotation(tag = "URL", annotation = link)
+                withStyle(
+                    style = MaterialTheme.typography.bodyMedium.toSpanStyle()
+                        .copy(color = MaterialTheme.colorScheme.primary)
+                ) {
+                    append("here")
+                }
+                pop()
+            }
+            val context = LocalContext.current
+            ClickableText(
+                text = annotatedString,
+                style = MaterialTheme.typography.bodyMedium,
+                onClick = { offset ->
+                    annotatedString.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                        .firstOrNull()?.let { annotation ->
+                            val intent = Intent(Intent.ACTION_VIEW, annotation.item.toUri())
+                            context.startActivity(intent)
+                        }
+                }
+            )
+        }
     }
 }
 
@@ -181,3 +204,18 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+
+private val runtimeShader = """
+    uniform shader image;
+    uniform float2 resolution;
+
+    half4 main(float2 fragCoord) {
+       float2 uv = fragCoord / resolution - 0.5;
+  
+       vec4 content = image.eval(fragCoord).rgba;
+       float alpha = smoothstep(0.5, 0.47, length(uv.y));
+            
+       return half4(content.rgb*alpha*content.a,alpha*content.a);
+    }
+""".trimIndent()
+
