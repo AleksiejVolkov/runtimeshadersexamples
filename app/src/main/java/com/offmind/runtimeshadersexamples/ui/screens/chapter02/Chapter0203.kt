@@ -1,9 +1,11 @@
-package com.offmind.runtimeshadersexamples.ui.screens
+package com.offmind.runtimeshadersexamples.ui.screens.chapter02
 
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -11,13 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -26,19 +22,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.jeziellago.compose.markdowntext.MarkdownText
+import com.offmind.runtimeshadersexamples.R
+import com.offmind.runtimeshadersexamples.ui.screens.provideTimeAsState
 import kotlin.random.Random
 
 @Composable
-fun Chapter0201(
+fun Chapter0203(
     codeContainer: @Composable ColumnScope.(String) -> Unit = {},
 ) {
     var percentage by remember {
@@ -47,32 +42,33 @@ fun Chapter0201(
 
     val percentageAnim = animateFloatAsState(
         targetValue = percentage,
-        animationSpec = androidx.compose.animation.core.tween(
-            durationMillis = 1000,
-            delayMillis = 0
+        animationSpec = tween(
+            durationMillis = 100,
+            delayMillis = 0,
         ),
-        label = ""
+        label = "",
     )
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.weight(1f))
         ShaderView(
             modifier = Modifier
-                .clipToBounds()
+                .size(300.dp)
                 .clickable(
                     indication = null, // Removes the ripple effect
                     interactionSource = remember { MutableInteractionSource() } // Prevents interaction tracking
                 ) {
-                    percentage = if (percentage == 0.0f) 1.0f else 0.0f
+                    percentage = if (percentage == 1f) 0f else 1f
                 },
             content = {
-                Text(
-                    text = "Hello, World!",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 24.sp
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(id = R.drawable.android_mascote_bw),
+                    contentDescription = null,
                 )
             },
-            percentage = percentageAnim.value
+            animStage = percentageAnim.value
         )
         Spacer(modifier = Modifier.weight(1f))
         codeContainer(
@@ -84,13 +80,12 @@ fun Chapter0201(
 @Composable
 private fun ShaderView(
     modifier: Modifier = Modifier,
-    percentage: Float = 0.5f,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
+    animStage: Float = 0f
 ) {
     val shader by remember {
         mutableStateOf(RuntimeShader(runtimeShader))
     }
-    val time by provideTimeAsState(Random.nextFloat() * 10f)
 
     Box(
         modifier = modifier
@@ -102,8 +97,7 @@ private fun ShaderView(
                 )
             }
             .graphicsLayer {
-                shader.setFloatUniform("time", time)
-                shader.setFloatUniform("percentage", percentage)
+                shader.setFloatUniform("percentage", animStage)
                 this.renderEffect = RenderEffect
                     .createRuntimeShaderEffect(shader, "image")
                     .asComposeRenderEffect()
@@ -115,24 +109,25 @@ private fun ShaderView(
 private val runtimeShader = """
     uniform shader image;
     uniform vec2 resolution;
-    uniform float time;
     uniform float percentage;
-
-    float Hash21(vec2 p) { 
-        return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
-    }
-        
+    
+    vec4 GetImageTexture(vec2 p, vec2 pivot) {
+        p.y /= resolution.y / resolution.x;
+        p += pivot;
+        p *= resolution;
+        return image.eval(p);
+    }  
+     
     vec4 main(float2 fragCoord) {
-         vec4 parent = image.eval(fragCoord);
-         vec2 uv = fragCoord / resolution - 0.5;
-         vec2 shiftedUv = uv + time*uv;
-             
-         vec3 noise = vec3(Hash21(shiftedUv)); 
-         vec3 image = parent.rgb;
-            
-         vec3 col = mix(noise, image, percentage);
-         float a = mix(1.0, parent.a, percentage);
-                
-         return vec4(col, a);
+        // Normalize fragment coordinates
+        vec2 uv = fragCoord / resolution;
+
+        float aberrationAmount = 0.009 * percentage;
+        vec4 outColor;
+        outColor.r = GetImageTexture(uv + vec2(aberrationAmount, 0.0), vec2(0.0, 0.0)).r;
+        outColor.ga = GetImageTexture(uv, vec2(0.0, 0.0)).ga;
+        outColor.b = GetImageTexture(uv - vec2(aberrationAmount, 0.0), vec2(0.0, 0.0)).b;
+        
+        return vec4(outColor.rgb, outColor.a);
     }
 """.trimIndent()

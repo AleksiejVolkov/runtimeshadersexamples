@@ -9,14 +9,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.offmind.runtimeshadersexamples.ui.chapters01
 import com.offmind.runtimeshadersexamples.ui.chapters02
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0101
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0102
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0103
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0104
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0105
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0106
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0201
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0202
 import com.offmind.runtimeshadersexamples.ui.screens.CodeContainer
 import com.offmind.runtimeshadersexamples.ui.theme.ChapterInfo
 import com.offmind.runtimeshadersexamples.ui.theme.LandingPage

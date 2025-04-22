@@ -58,7 +58,7 @@ fun LandingPage(
         )
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 16.dp)
                 .onSizeChanged { size ->
                     fadeShader.setFloatUniform(
                         "resolution", size.width.toFloat(), size.height.toFloat()
@@ -72,7 +72,7 @@ fun LandingPage(
         ) {
             item {
                 Column {
-                    Spacer(modifier = Modifier.height(7.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text("Chapter 01", style = MaterialTheme.typography.titleLarge)
                     Text("Circles and all you need about that", style = MaterialTheme.typography.titleMedium)
                 }
@@ -85,7 +85,7 @@ fun LandingPage(
             }
             item {
                 Column {
-                    Spacer(modifier = Modifier.height(7.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text("Chapter 02", style = MaterialTheme.typography.titleLarge)
                     Text("Blending with the input", style = MaterialTheme.typography.titleMedium)
                 }
@@ -148,7 +148,7 @@ fun ProjectInfo(project: Project, modifier: Modifier = Modifier) {
         )
         Row {
             Text(
-                text = "You can buy a book: ",
+                text = "You can buy the book ",
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -215,10 +215,12 @@ private val runtimeShader = """
 
     half4 main(float2 fragCoord) {
        float2 uv = fragCoord / resolution - 0.5;
-
+    
        vec4 content = image.eval(fragCoord).rgba;
-       float alpha = smoothstep(0.5, 0.47, length(uv.y));
+       
+       float alpha = smoothstep(0.5, 0.48, length(uv.y));
 
        return half4(content.rgb*alpha*content.a,alpha*content.a);
+    //  return half4(test,1.0);
     }
 """.trimIndent()

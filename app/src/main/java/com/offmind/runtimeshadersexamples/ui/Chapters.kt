@@ -1,15 +1,15 @@
 package com.offmind.runtimeshadersexamples.ui
 
-import androidx.compose.runtime.Composable
 import com.offmind.runtimeshadersexamples.navigation.NavRoutes
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0101
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0102
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0103
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0104
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0105
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0106
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0201
-import com.offmind.runtimeshadersexamples.ui.screens.Chapter0202
+import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0101
+import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0102
+import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0103
+import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0104
+import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0105
+import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0106
+import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0201
+import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0202
+import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0203
 import com.offmind.runtimeshadersexamples.ui.theme.ChapterInfo
 
 /**
@@ -81,4 +81,10 @@ val chapters02 = listOf(
         route = NavRoutes.getChapterRoute("0202"),
         composable = { codeContainer -> { Chapter0202(codeContainer = codeContainer) } }
     ),
+    ChapterInfo(
+        title = "Section 03: Chromatic aberration",
+        description = "Simple Chromatic aberration effect",
+        route = NavRoutes.getChapterRoute("0203"),
+        composable = { codeContainer -> { Chapter0203(codeContainer = codeContainer) } }
+    )
 )

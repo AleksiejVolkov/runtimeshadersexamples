@@ -1,4 +1,4 @@
-package com.offmind.runtimeshadersexamples.ui.screens
+package com.offmind.runtimeshadersexamples.ui.screens.chapter01
 
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
