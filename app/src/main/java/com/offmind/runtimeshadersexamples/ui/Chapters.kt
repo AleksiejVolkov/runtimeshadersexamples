@@ -10,6 +10,7 @@ import com.offmind.runtimeshadersexamples.ui.screens.chapter01.Chapter0106
 import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0201
 import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0202
 import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0203
+import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0204
 import com.offmind.runtimeshadersexamples.ui.theme.ChapterInfo
 
 /**
@@ -86,5 +87,11 @@ val chapters02 = listOf(
         description = "Simple Chromatic aberration effect",
         route = NavRoutes.getChapterRoute("0203"),
         composable = { codeContainer -> { Chapter0203(codeContainer = codeContainer) } }
+    ),
+    ChapterInfo(
+        title = "Section 04: Ripple effect",
+        description = "Very basic shokewave",
+        route = NavRoutes.getChapterRoute("0204"),
+        composable = { codeContainer -> { Chapter0204(codeContainer = codeContainer) } }
     )
 )
