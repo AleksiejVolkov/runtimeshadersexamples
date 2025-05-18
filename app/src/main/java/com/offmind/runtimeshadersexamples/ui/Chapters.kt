@@ -11,6 +11,7 @@ import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0201
 import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0202
 import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0203
 import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0204
+import com.offmind.runtimeshadersexamples.ui.screens.chapter02.Chapter0205
 import com.offmind.runtimeshadersexamples.ui.theme.ChapterInfo
 
 /**
@@ -93,5 +94,11 @@ val chapters02 = listOf(
         description = "Very basic shokewave",
         route = NavRoutes.getChapterRoute("0204"),
         composable = { codeContainer -> { Chapter0204(codeContainer = codeContainer) } }
-    )
+    ),
+    ChapterInfo(
+        title = "Section 05: Fade list items",
+        description = "Fade and scale list items on edges",
+        route = NavRoutes.getChapterRoute("0205"),
+        composable = { codeContainer -> { Chapter0205(codeContainer = codeContainer) } }
+    ),
 )

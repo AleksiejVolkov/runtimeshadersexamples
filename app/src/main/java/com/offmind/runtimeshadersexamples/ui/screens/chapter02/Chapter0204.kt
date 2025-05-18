@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -79,19 +80,13 @@ fun Chapter0204(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ShaderView(
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier.fillMaxWidth().weight(1f).background(color = Color.White),
             animStage = percentage,
             pointerPos = pointerPos,
         ) {
             Image(modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                painter = painterResource(id = if(isSystemInDarkTheme()) R.drawable.background_dark else R.drawable.background),
-                contentDescription = null,
-            )
-            Image(
-                modifier = Modifier.size(300.dp).clip(RoundedCornerShape(10.dp)),
-                contentScale = ContentScale.Crop,
-                painter = painterResource(id = R.drawable.android_mascote),
+                painter = painterResource(id = if(isSystemInDarkTheme()) R.drawable.checker_bg else R.drawable.background),
                 contentDescription = null,
             )
         }
@@ -142,11 +137,7 @@ private val runtimeShader = """
     uniform vec2 pointer;
 
      vec4 GetImageTexture(vec2 p, vec2 pivot, vec2 r) {
-        if (r.x > r.y) {
-            p.x /= r.x / r.y;
-        } else {
-            p.y /= r.y / r.x;
-        }
+        p.y /= r.y / r.x;
         p += pivot;
         p *= r;
         return image.eval(p);
@@ -167,28 +158,21 @@ private val runtimeShader = """
     }
 
     vec2 NormalizeCoordinates(vec2 o, vec2 r) {
-        // Ensure coordinates are properly normalized to the -0.5 to 0.5 range
         float2 uv = o / r - 0.5;
-        // Adjust for aspect ratio
-        if (r.x > r.y) {
-            uv.x *= r.x / r.y;
-        } else {
-            uv.y *= r.y / r.x;
-        } 
+        uv.y *= r.y / r.x;
+       
         return uv;
     }
 
-    vec4 Drop(vec2 d, vec2 p) {
-        float coef = percentage;
-        float r = 0.17 * coef;
+    vec4 Wave(vec2 d, vec2 p) {
+        float r = 0.15 * percentage;
         float sdf = CircleSDF(d - p, r);
         float mask = smoothstep(r + 0.1, r, sdf) * smoothstep(r - 0.1, r, sdf);
-
-        vec4 image = GetImageTexture(d, vec2(0.5, 0.5), resolution);
+        
+        vec4 image = GetImageTexture(d+sdf*mask, vec2(0.5, 0.5), resolution);
         vec3 ripple = ChromaticAberration(d+sdf * mask, vec2(0.1, 0.0), resolution);
-
-        // Combine the channels with the chromatic aberration
-        return vec4(mix(image.rgb, ripple, mask*(1.-coef)),mask*(1.-coef));
+        
+        return vec4(mix(image.rgb, ripple, mask),mask*(1.-percentage));
     }
 
     vec4 main(float2 fragCoord) {
@@ -197,14 +181,14 @@ private val runtimeShader = """
         // Normalize the pointer coordinates the same way
         float2 normalizedPointer = NormalizeCoordinates(pointer, resolution);
 
-        // Apply the drop effect
-        vec4 drop = Drop(uv, normalizedPointer);
+        // Apply the wave effect
+        vec4 wave = Wave(uv, normalizedPointer);
 
         // Get the original image
         vec4 image = GetImageTexture(uv, vec2(0.5, 0.5), resolution);
 
         // Mix the original image with the drop effect
-        vec3 finalColor = mix(image.rgb, drop.rgb, drop.a);
+        vec3 finalColor = mix(image.rgb, wave.rgb, wave.a);
 
         return vec4(finalColor, image.a);
     }

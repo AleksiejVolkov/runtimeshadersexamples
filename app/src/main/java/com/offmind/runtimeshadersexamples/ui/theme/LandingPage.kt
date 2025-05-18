@@ -218,9 +218,8 @@ private val runtimeShader = """
     
        vec4 content = image.eval(fragCoord).rgba;
        
-       float alpha = smoothstep(0.5, 0.48, length(uv.y));
+       float alpha = smoothstep(0.5, 0.48, length(uv.y)) * step(length(uv.x), 0.5);
 
        return half4(content.rgb*alpha*content.a,alpha*content.a);
-    //  return half4(test,1.0);
     }
 """.trimIndent()

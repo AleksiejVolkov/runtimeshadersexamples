@@ -35,24 +35,6 @@ import com.offmind.runtimeshadersexamples.ui.theme.LandingPage
 object NavRoutes {
     const val LANDING = "landing"
 
-    // Chapter routes - these are kept for backward compatibility
-    const val CHAPTER_0101 = "chapter_0101"
-    const val CHAPTER_0102 = "chapter_0102"
-    const val CHAPTER_0103 = "chapter_0103"
-    const val CHAPTER_0104 = "chapter_0104"
-    const val CHAPTER_0105 = "chapter_0105"
-    const val CHAPTER_0106 = "chapter_0106"
-    const val CHAPTER_0201 = "chapter_0201"
-    const val CHAPTER_0202 = "chapter_0202"
-
-    // Helper function to get all chapter routes
-    fun getAllChapterRoutes(): List<String> {
-        return listOf(
-            CHAPTER_0101, CHAPTER_0102, CHAPTER_0103, CHAPTER_0104, CHAPTER_0105, CHAPTER_0106,
-            CHAPTER_0201, CHAPTER_0202
-        )
-    }
-
     /**
      * Helper function to generate route from chapter number
      * Example: "0101" -> "chapter_0101"
